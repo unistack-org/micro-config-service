@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package service;
+option go_package="github.com/unistack-org/micro-config-service;service";
+
+service Config {
+	rpc Load(LoadRequest) returns (LoadResponse) {};
+	rpc Save(SaveRequest) returns (SaveResponse) {};
+}
+
+message LoadRequest {
+  string service = 1;
+};
+
+message LoadResponse {
+  bytes config = 1;
+};
+
+message SaveRequest {
+  string service = 1;
+  bytes config = 2;
+};
+
+message SaveResponse {};

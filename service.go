@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/imdario/mergo"
-	pb "github.com/unistack-org/micro-config-service/proto"
+	pb "github.com/unistack-org/micro-config-service/v3/proto"
 	"github.com/unistack-org/micro/v3/config"
 )
 

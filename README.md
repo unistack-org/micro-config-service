@@ -1,2 +1,2 @@
-# micro-logger-service
+# micro-config-service
 

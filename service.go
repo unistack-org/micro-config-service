@@ -6,6 +6,7 @@ import (
 
 	"github.com/imdario/mergo"
 	pb "github.com/unistack-org/micro-config-service/v3/proto"
+	"github.com/unistack-org/micro/v3/client"
 	"github.com/unistack-org/micro/v3/config"
 	rutil "github.com/unistack-org/micro/v3/util/reflect"
 )
@@ -29,15 +30,25 @@ func (c *serviceConfig) Init(opts ...config.Option) error {
 		o(&c.opts)
 	}
 
+	var cli client.Client
 	if c.opts.Context != nil {
-		if v, ok := c.opts.Context.Value(serviceKey{}).(string); ok {
+		if v, ok := c.opts.Context.Value(serviceKey{}).(string); ok && v != "" {
 			c.service = v
 		}
+		if v, ok := c.opts.Context.Value(clientKey{}).(client.Client); ok {
+			cli = v
+		}
+	}
+
+	if cli == nil {
+		return fmt.Errorf("missing Client option")
 	}
 
 	if c.service == "" {
 		return fmt.Errorf("missing Service option")
 	}
+
+	c.client = pb.NewConfigService(c.service, cli)
 
 	return nil
 }

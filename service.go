@@ -7,6 +7,7 @@ import (
 	"github.com/imdario/mergo"
 	pb "github.com/unistack-org/micro-config-service/v3/proto"
 	"github.com/unistack-org/micro/v3/config"
+	rutil "github.com/unistack-org/micro/v3/util/reflect"
 )
 
 var (
@@ -53,7 +54,7 @@ func (c *serviceConfig) Load(ctx context.Context) error {
 		return fmt.Errorf("failed to load error config: %w", err)
 	}
 
-	src, err := config.Zero(c.opts.Struct)
+	src, err := rutil.Zero(c.opts.Struct)
 	if err == nil {
 		err = c.opts.Codec.Unmarshal(rsp.Config, src)
 		if err == nil {

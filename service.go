@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/imdario/mergo"
+	pbmicro "github.com/unistack-org/micro-config-service/v3/micro"
 	pb "github.com/unistack-org/micro-config-service/v3/proto"
 	"github.com/unistack-org/micro/v3/client"
 	"github.com/unistack-org/micro/v3/config"
@@ -18,7 +19,7 @@ var (
 type serviceConfig struct {
 	opts    config.Options
 	service string
-	client  pb.ConfigService
+	client  pbmicro.ConfigClient
 }
 
 func (c *serviceConfig) Options() config.Options {
@@ -48,7 +49,7 @@ func (c *serviceConfig) Init(opts ...config.Option) error {
 		return fmt.Errorf("missing Service option")
 	}
 
-	c.client = pb.NewConfigService(c.service, cli)
+	c.client = pbmicro.NewConfigClient(c.service, cli)
 
 	return nil
 }

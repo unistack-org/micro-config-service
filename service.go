@@ -63,7 +63,7 @@ func (c *serviceConfig) Load(ctx context.Context) error {
 
 	rsp, err := c.client.Load(ctx, &pb.LoadRequest{Service: c.service})
 	if err != nil && !c.opts.AllowFail {
-		return fmt.Errorf("failed to load error config: %w", err)
+		return fmt.Errorf("failed to load config: %w", err)
 	}
 
 	src, err := rutil.Zero(c.opts.Struct)
@@ -91,6 +91,17 @@ func (c *serviceConfig) Save(ctx context.Context) error {
 		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
 			return err
 		}
+	}
+
+	buf, err := c.opts.Codec.Marshal(c.opts.Struct)
+	if err != nil && c.opts.AllowFail {
+		return nil
+	} else if err != nil {
+		return err
+	}
+
+	if _, err = c.client.Save(ctx, &pb.SaveRequest{Service: c.service, Config: buf}); err != nil && !c.opts.AllowFail {
+		return fmt.Errorf("failed to save config: %w", err)
 	}
 
 	for _, fn := range c.opts.AfterSave {

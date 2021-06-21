@@ -54,7 +54,7 @@ func (c *serviceConfig) Init(opts ...config.Option) error {
 	return nil
 }
 
-func (c *serviceConfig) Load(ctx context.Context) error {
+func (c *serviceConfig) Load(ctx context.Context, opts ...config.LoadOption) error {
 	for _, fn := range c.opts.BeforeLoad {
 		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
 			return err
@@ -66,11 +66,20 @@ func (c *serviceConfig) Load(ctx context.Context) error {
 		return fmt.Errorf("failed to load config: %w", err)
 	}
 
+	options := config.NewLoadOptions(opts...)
+	mopts := []func(*mergo.Config){mergo.WithTypeCheck}
+	if options.Override {
+		mopts = append(mopts, mergo.WithOverride)
+	}
+	if options.Append {
+		mopts = append(mopts, mergo.WithAppendSlice)
+	}
+
 	src, err := rutil.Zero(c.opts.Struct)
 	if err == nil {
 		err = c.opts.Codec.Unmarshal(rsp.Config, src)
 		if err == nil {
-			err = mergo.Merge(c.opts.Struct, src, mergo.WithOverride, mergo.WithTypeCheck, mergo.WithAppendSlice)
+			err = mergo.Merge(c.opts.Struct, src, mopts...)
 		}
 	}
 	if err != nil && !c.opts.AllowFail {
@@ -86,7 +95,7 @@ func (c *serviceConfig) Load(ctx context.Context) error {
 	return nil
 }
 
-func (c *serviceConfig) Save(ctx context.Context) error {
+func (c *serviceConfig) Save(ctx context.Context, opts ...config.SaveOption) error {
 	for _, fn := range c.opts.BeforeSave {
 		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
 			return err

@@ -12,9 +12,7 @@ import (
 	rutil "github.com/unistack-org/micro/v3/util/reflect"
 )
 
-var (
-	DefaultStructTag = "service"
-)
+var DefaultStructTag = "service"
 
 type serviceConfig struct {
 	opts    config.Options
@@ -42,11 +40,21 @@ func (c *serviceConfig) Init(opts ...config.Option) error {
 	}
 
 	if cli == nil {
-		return fmt.Errorf("missing Client option")
+		err := fmt.Errorf("missing client option")
+		c.opts.Logger.Error(c.opts.Context, err)
+		if !c.opts.AllowFail {
+			return err
+		}
+		return nil
 	}
 
 	if c.service == "" {
-		return fmt.Errorf("missing Service option")
+		err := fmt.Errorf("missing Service option")
+		c.opts.Logger.Error(c.opts.Context, err)
+		if !c.opts.AllowFail {
+			return err
+		}
+		return nil
 	}
 
 	c.client = pbmicro.NewConfigClient(c.service, cli)
@@ -55,15 +63,17 @@ func (c *serviceConfig) Init(opts ...config.Option) error {
 }
 
 func (c *serviceConfig) Load(ctx context.Context, opts ...config.LoadOption) error {
-	for _, fn := range c.opts.BeforeLoad {
-		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
-			return err
-		}
+	if err := config.DefaultBeforeLoad(ctx, c); err != nil {
+		return err
 	}
 
 	rsp, err := c.client.Load(ctx, &pb.LoadRequest{Service: c.service})
-	if err != nil && !c.opts.AllowFail {
-		return fmt.Errorf("failed to load config: %w", err)
+	if err != nil {
+		c.opts.Logger.Errorf(ctx, "service load error: %v", err)
+		if !c.opts.AllowFail {
+			return fmt.Errorf("failed to load config: %w", err)
+		}
+		return config.DefaultAfterLoad(ctx, c)
 	}
 
 	options := config.NewLoadOptions(opts...)
@@ -82,41 +92,39 @@ func (c *serviceConfig) Load(ctx context.Context, opts ...config.LoadOption) err
 			err = mergo.Merge(c.opts.Struct, src, mopts...)
 		}
 	}
-	if err != nil && !c.opts.AllowFail {
-		return err
+
+	if err != nil {
+		c.opts.Logger.Errorf(ctx, "service load error: %v", err)
+		if !c.opts.AllowFail {
+			return fmt.Errorf("failed to load config: %w", err)
+		}
 	}
 
-	for _, fn := range c.opts.AfterLoad {
-		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
-			return err
-		}
+	if err := config.DefaultAfterLoad(ctx, c); err != nil {
+		return err
 	}
 
 	return nil
 }
 
 func (c *serviceConfig) Save(ctx context.Context, opts ...config.SaveOption) error {
-	for _, fn := range c.opts.BeforeSave {
-		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
-			return err
-		}
-	}
-
-	buf, err := c.opts.Codec.Marshal(c.opts.Struct)
-	if err != nil && c.opts.AllowFail {
-		return nil
-	} else if err != nil {
+	if err := config.DefaultBeforeSave(ctx, c); err != nil {
 		return err
 	}
 
-	if _, err = c.client.Save(ctx, &pb.SaveRequest{Service: c.service, Config: buf}); err != nil && !c.opts.AllowFail {
-		return fmt.Errorf("failed to save config: %w", err)
+	buf, err := c.opts.Codec.Marshal(c.opts.Struct)
+	if err == nil {
+		_, err = c.client.Save(ctx, &pb.SaveRequest{Service: c.service, Config: buf})
+	}
+	if err != nil {
+		c.opts.Logger.Errorf(ctx, "service save error: %v", err)
+		if !c.opts.AllowFail {
+			return fmt.Errorf("failed to save config: %w", err)
+		}
 	}
 
-	for _, fn := range c.opts.AfterSave {
-		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
-			return err
-		}
+	if err := config.DefaultAfterSave(ctx, c); err != nil {
+		return err
 	}
 
 	return nil
@@ -128,6 +136,10 @@ func (c *serviceConfig) String() string {
 
 func (c *serviceConfig) Name() string {
 	return c.opts.Name
+}
+
+func (c *serviceConfig) Watch(ctx context.Context, opts ...config.WatchOption) (config.Watcher, error) {
+	return nil, fmt.Errorf("not implemented")
 }
 
 func NewConfig(opts ...config.Option) config.Config {

@@ -1,15 +1,15 @@
-package service
+package service // import "go.unistack.org/micro-config-service/v3"
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/imdario/mergo"
-	pbmicro "github.com/unistack-org/micro-config-service/v3/micro"
-	pb "github.com/unistack-org/micro-config-service/v3/proto"
-	"github.com/unistack-org/micro/v3/client"
-	"github.com/unistack-org/micro/v3/config"
-	rutil "github.com/unistack-org/micro/v3/util/reflect"
+	pbmicro "go.unistack.org/micro-config-service/v3/micro"
+	pb "go.unistack.org/micro-config-service/v3/proto"
+	"go.unistack.org/micro/v3/client"
+	"go.unistack.org/micro/v3/config"
+	rutil "go.unistack.org/micro/v3/util/reflect"
 )
 
 var DefaultStructTag = "service"

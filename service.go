@@ -12,6 +12,8 @@ import (
 	rutil "go.unistack.org/micro/v3/util/reflect"
 )
 
+var _ config.Config = &serviceConfig{}
+
 var DefaultStructTag = "service"
 
 type serviceConfig struct {
@@ -142,7 +144,7 @@ func (c *serviceConfig) Watch(ctx context.Context, opts ...config.WatchOption) (
 	return nil, fmt.Errorf("not implemented")
 }
 
-func NewConfig(opts ...config.Option) config.Config {
+func NewConfig(opts ...config.Option) *serviceConfig {
 	options := config.NewOptions(opts...)
 	if len(options.StructTag) == 0 {
 		options.StructTag = DefaultStructTag

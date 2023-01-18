@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/imdario/mergo v0.3.13
-	go.unistack.org/micro/v3 v3.10.1
+	go.unistack.org/micro/v3 v3.10.4
 	google.golang.org/grpc v1.51.0
 	google.golang.org/protobuf v1.28.1
 )

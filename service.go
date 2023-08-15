@@ -9,6 +9,7 @@ import (
 	pb "go.unistack.org/micro-config-service/v4/proto"
 	"go.unistack.org/micro/v4/client"
 	"go.unistack.org/micro/v4/config"
+	"go.unistack.org/micro/v4/options"
 	rutil "go.unistack.org/micro/v4/util/reflect"
 )
 
@@ -19,14 +20,14 @@ var DefaultStructTag = "service"
 type serviceConfig struct {
 	opts    config.Options
 	service string
-	client  pbmicro.ConfigClient
+	client  pb.ConfigServiceClient
 }
 
 func (c *serviceConfig) Options() config.Options {
 	return c.opts
 }
 
-func (c *serviceConfig) Init(opts ...config.Option) error {
+func (c *serviceConfig) Init(opts ...options.Option) error {
 	if err := config.DefaultBeforeInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
 		return err
 	}
@@ -71,7 +72,7 @@ func (c *serviceConfig) Init(opts ...config.Option) error {
 		return nil
 	}
 
-	c.client = pbmicro.NewConfigClient(c.service, cli)
+	c.client = pbmicro.NewConfigServiceClient(c.service, cli)
 
 	if err := config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
 		return err
@@ -80,7 +81,7 @@ func (c *serviceConfig) Init(opts ...config.Option) error {
 	return nil
 }
 
-func (c *serviceConfig) Load(ctx context.Context, opts ...config.LoadOption) error {
+func (c *serviceConfig) Load(ctx context.Context, opts ...options.Option) error {
 	if err := config.DefaultBeforeLoad(ctx, c); err != nil && !c.opts.AllowFail {
 		return err
 	}
@@ -131,7 +132,7 @@ func (c *serviceConfig) Load(ctx context.Context, opts ...config.LoadOption) err
 	return nil
 }
 
-func (c *serviceConfig) Save(ctx context.Context, opts ...config.SaveOption) error {
+func (c *serviceConfig) Save(ctx context.Context, opts ...options.Option) error {
 	if err := config.DefaultBeforeSave(ctx, c); err != nil && !c.opts.AllowFail {
 		return err
 	}
@@ -166,11 +167,11 @@ func (c *serviceConfig) Name() string {
 	return c.opts.Name
 }
 
-func (c *serviceConfig) Watch(ctx context.Context, opts ...config.WatchOption) (config.Watcher, error) {
+func (c *serviceConfig) Watch(ctx context.Context, opts ...options.Option) (config.Watcher, error) {
 	return nil, fmt.Errorf("not implemented")
 }
 
-func NewConfig(opts ...config.Option) *serviceConfig {
+func NewConfig(opts ...options.Option) *serviceConfig {
 	options := config.NewOptions(opts...)
 	if len(options.StructTag) == 0 {
 		options.StructTag = DefaultStructTag

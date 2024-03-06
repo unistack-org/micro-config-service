@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/imdario/mergo"
+	"dario.cat/mergo"
 	pbmicro "go.unistack.org/micro-config-service/v4/micro"
 	pb "go.unistack.org/micro-config-service/v4/proto"
 	"go.unistack.org/micro/v4/client"

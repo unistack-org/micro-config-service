@@ -28,12 +28,15 @@ func (c *serviceConfig) Options() config.Options {
 }
 
 func (c *serviceConfig) Init(opts ...options.Option) error {
-	if err := config.DefaultBeforeInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
+	var err error
+	if err = config.DefaultBeforeInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
 		return err
 	}
 
 	for _, o := range opts {
-		o(&c.opts)
+		if err = o(&c.opts); err != nil {
+			return err
+		}
 	}
 
 	var cli client.Client
@@ -47,12 +50,12 @@ func (c *serviceConfig) Init(opts ...options.Option) error {
 	}
 
 	if cli == nil {
-		err := fmt.Errorf("missing client option")
+		err = fmt.Errorf("missing client option")
 		if !c.opts.AllowFail {
 			return err
 		}
 
-		if err := config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
+		if err = config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
 			return err
 		}
 
@@ -60,12 +63,12 @@ func (c *serviceConfig) Init(opts ...options.Option) error {
 	}
 
 	if c.service == "" {
-		err := fmt.Errorf("missing Service option")
+		err = fmt.Errorf("missing Service option")
 		if !c.opts.AllowFail {
 			return err
 		}
 
-		if err := config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
+		if err = config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
 			return err
 		}
 
@@ -74,7 +77,7 @@ func (c *serviceConfig) Init(opts ...options.Option) error {
 
 	c.client = pbmicro.NewConfigServiceClient(c.service, cli)
 
-	if err := config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
+	if err = config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
 		return err
 	}
 

@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package service;
-option go_package="go.unistack.org/micro-config-service/v3/proto;servicepb";
+option go_package="go.unistack.org/micro-config-service/v4/proto;servicepb";
 
 service Config {
 	rpc Load(LoadRequest) returns (LoadResponse) {};

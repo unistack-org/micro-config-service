@@ -1,15 +1,15 @@
-package service // import "go.unistack.org/micro-config-service/v3"
+package service
 
 import (
 	"context"
 	"fmt"
 
 	"dario.cat/mergo"
-	pbmicro "go.unistack.org/micro-config-service/v3/micro"
-	pb "go.unistack.org/micro-config-service/v3/proto"
-	"go.unistack.org/micro/v3/client"
-	"go.unistack.org/micro/v3/config"
-	rutil "go.unistack.org/micro/v3/util/reflect"
+	pbmicro "go.unistack.org/micro-config-service/v4/micro"
+	pb "go.unistack.org/micro-config-service/v4/proto"
+	"go.unistack.org/micro/v4/client"
+	"go.unistack.org/micro/v4/config"
+	rutil "go.unistack.org/micro/v4/util/reflect"
 )
 
 var _ config.Config = &serviceConfig{}

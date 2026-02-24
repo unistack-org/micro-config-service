@@ -3,22 +3,71 @@ syntax = "proto3";
 package service;
 option go_package="go.unistack.org/micro-config-service/v4/proto;servicepb";
 
+import "api/annotations.proto";
+import "openapiv3/annotations.proto";
+
+// Config — сервис управления конфигурациями
+// Предоставляет API для загрузки и сохранения конфигураций сервисов
 service Config {
-	rpc Load(LoadRequest) returns (LoadResponse) {};
-	rpc Save(SaveRequest) returns (SaveResponse) {};
+    // Load загружает конфигурацию для указанного сервиса
+    // Возвращает конфигурацию в формате JSON/YAML в поле config
+    rpc Load(LoadRequest) returns (LoadResponse) {
+        option (micro.openapiv3.openapiv3_operation) = {
+            operation_id: "Load";
+            responses: {
+                default: {
+                    reference: {
+                        _ref: ".service.Error";
+                    };
+                };
+            };
+        };
+        option (micro.api.http) = { get: "/load"; };
+    };
+    
+    // Save сохраняет конфигурацию для указанного сервиса
+    // Принимает конфигурацию в формате JSON/YAML в поле config
+    rpc Save(SaveRequest) returns (SaveResponse) {
+        option (micro.openapiv3.openapiv3_operation) = {
+            operation_id: "Save";
+            responses: {
+                default: {
+                    reference: {
+                        _ref: ".service.Error";
+                    };
+                };
+            };
+        };
+        option (micro.api.http) = { post: "/save"; body: "*"; };
+    };
 }
 
+// LoadRequest — запрос на загрузку конфигурации
 message LoadRequest {
-  string service = 1;
+    // service — имя сервиса для которого загружается конфигурация
+    string service = 1;
 };
 
+// LoadResponse — ответ на запрос конфигурации
 message LoadResponse {
-  bytes config = 1;
+    // config — данные конфигурации в формате JSON/YAML
+    bytes config = 1;
 };
 
+// SaveRequest — запрос на сохранение конфигурации
 message SaveRequest {
-  string service = 1;
-  bytes config = 2;
+    // service — имя сервиса для которого сохраняется конфигурация
+    string service = 1;
+    // config — данные конфигурации в формате JSON/YAML
+    bytes config = 2;
 };
 
+// SaveResponse — ответ на запрос сохранения конфигурации
+// Пустое сообщение, успешное сохранение подтверждается отсутствием ошибки
 message SaveResponse {};
+
+// Error — сообщение об ошибке
+// Возвращается при возникновении ошибок в методах сервиса Config
+message Error {
+
+}

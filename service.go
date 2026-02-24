@@ -5,7 +5,8 @@ import (
 	"fmt"
 
 	"dario.cat/mergo"
-	pbmicro "go.unistack.org/micro-config-service/v4/micro"
+	pbgrpc "go.unistack.org/micro-config-service/v4/grpc"
+	pbhttp "go.unistack.org/micro-config-service/v4/http"
 	pb "go.unistack.org/micro-config-service/v4/proto"
 	"go.unistack.org/micro/v4/client"
 	"go.unistack.org/micro/v4/config"
@@ -19,7 +20,7 @@ var DefaultStructTag = "service"
 type serviceConfig struct {
 	opts    config.Options
 	service string
-	client  pbmicro.ConfigClient
+	client  pb.ConfigClient
 }
 
 func (c *serviceConfig) Options() config.Options {
@@ -71,7 +72,14 @@ func (c *serviceConfig) Init(opts ...config.Option) error {
 		return nil
 	}
 
-	c.client = pbmicro.NewConfigClient(c.service, cli)
+	switch cli.String() {
+	case "http":
+		c.client = pbhttp.NewConfigClient(c.service, cli)
+	case "grpc":
+		c.client = pbgrpc.NewConfigClient(c.service, cli)
+	default:
+		return fmt.Errorf("unknown client option")
+	}
 
 	if err := config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
 		return err

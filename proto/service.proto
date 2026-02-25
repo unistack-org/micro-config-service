@@ -69,5 +69,5 @@ message SaveResponse {};
 // Error — сообщение об ошибке
 // Возвращается при возникновении ошибок в методах сервиса Config
 message Error {
-
+    string msg = 1;
 }

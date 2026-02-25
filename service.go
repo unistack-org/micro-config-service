@@ -46,8 +46,21 @@ func (c *serviceConfig) Init(opts ...config.Option) error {
 		}
 	}
 
+	if c.opts.Codec == nil {
+		err := fmt.Errorf("missing Codec option")
+		if !c.opts.AllowFail {
+			return err
+		}
+
+		if err := config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
+			return err
+		}
+
+		return nil
+	}
+
 	if cli == nil {
-		err := fmt.Errorf("missing client option")
+		err := fmt.Errorf("missing Client option")
 		if !c.opts.AllowFail {
 			return err
 		}

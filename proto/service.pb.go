@@ -7,8 +7,8 @@
 package servicepb
 
 import (
-	_ "go.unistack.org/micro-proto/v4/api"
-	_ "go.unistack.org/micro-proto/v4/openapiv3"
+	_ "go.unistack.org/micro-proto/v5/api"
+	_ "go.unistack.org/micro-proto/v5/openapiv3"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

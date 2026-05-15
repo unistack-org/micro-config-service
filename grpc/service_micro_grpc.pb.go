@@ -6,9 +6,9 @@ package servicepb
 
 import (
 	context "context"
-	proto "go.unistack.org/micro-config-service/v4/proto"
-	client "go.unistack.org/micro/v4/client"
-	server "go.unistack.org/micro/v4/server"
+	proto "go.unistack.org/micro-config-service/v5/proto"
+	client "go.unistack.org/micro/v5/client"
+	server "go.unistack.org/micro/v5/server"
 )
 
 type configClient struct {

@@ -6,11 +6,11 @@ package servicepb
 
 import (
 	context "context"
-	v41 "go.unistack.org/micro-client-http/v4"
-	proto "go.unistack.org/micro-config-service/v4/proto"
-	v4 "go.unistack.org/micro-server-http/v4"
-	client "go.unistack.org/micro/v4/client"
-	server "go.unistack.org/micro/v4/server"
+	v41 "go.unistack.org/micro-client-http/v5"
+	proto "go.unistack.org/micro-config-service/v5/proto"
+	v4 "go.unistack.org/micro-server-http/v5"
+	client "go.unistack.org/micro/v5/client"
+	server "go.unistack.org/micro/v5/server"
 	http "net/http"
 )
 

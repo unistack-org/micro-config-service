@@ -5,12 +5,12 @@ import (
 	"fmt"
 
 	"dario.cat/mergo"
-	pbgrpc "go.unistack.org/micro-config-service/v4/grpc"
-	pbhttp "go.unistack.org/micro-config-service/v4/http"
-	pb "go.unistack.org/micro-config-service/v4/proto"
-	"go.unistack.org/micro/v4/client"
-	"go.unistack.org/micro/v4/config"
-	rutil "go.unistack.org/micro/v4/util/reflect"
+	pbgrpc "go.unistack.org/micro-config-service/v5/grpc"
+	pbhttp "go.unistack.org/micro-config-service/v5/http"
+	pb "go.unistack.org/micro-config-service/v5/proto"
+	"go.unistack.org/micro/v5/client"
+	"go.unistack.org/micro/v5/config"
+	rutil "go.unistack.org/micro/v5/util/reflect"
 )
 
 var _ config.Config = &serviceConfig{}

@@ -1,8 +1,8 @@
 package service
 
 import (
-	"go.unistack.org/micro/v4/client"
-	"go.unistack.org/micro/v4/config"
+	"go.unistack.org/micro/v5/client"
+	"go.unistack.org/micro/v5/config"
 )
 
 type clientKey struct{}

@@ -1,13 +1,13 @@
-module go.unistack.org/micro-config-service/v4
+module go.unistack.org/micro-config-service/v5
 
 go 1.25
 
 require (
 	dario.cat/mergo v1.0.2
-	go.unistack.org/micro-client-http/v4 v4.1.5
-	go.unistack.org/micro-proto/v4 v4.1.0
-	go.unistack.org/micro-server-http/v4 v4.1.4
-	go.unistack.org/micro/v4 v4.1.26
+	go.unistack.org/micro-client-http/v5 v4.1.5
+	go.unistack.org/micro-proto/v5 v4.1.0
+	go.unistack.org/micro-server-http/v5 v4.1.4
+	go.unistack.org/micro/v5 v4.1.26
 	google.golang.org/protobuf v1.36.10
 )
 

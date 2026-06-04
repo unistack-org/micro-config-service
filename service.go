@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"dario.cat/mergo"
 	pbgrpc "go.unistack.org/micro-config-service/v5/grpc"
@@ -188,7 +189,27 @@ func (c *serviceConfig) Name() string {
 }
 
 func (c *serviceConfig) Watch(ctx context.Context, opts ...config.WatchOption) (config.Watcher, error) {
-	return nil, fmt.Errorf("not implemented")
+	if c.client == nil {
+		return nil, fmt.Errorf("not initialized")
+	}
+	wopts := config.NewWatchOptions(opts...)
+	if wopts.MinInterval == 0 {
+		wopts.MinInterval = 5 * time.Second
+	}
+	if wopts.MaxInterval == 0 {
+		wopts.MaxInterval = 1 * time.Minute
+	}
+	w := &serviceWatcher{
+		client:  c.client,
+		service: c.service,
+		opts:    c.opts,
+		wopts:   wopts,
+		done:    make(chan struct{}),
+		vchan:   make(chan map[string]interface{}),
+		echan:   make(chan error),
+	}
+	go w.run()
+	return w, nil
 }
 
 func NewConfig(opts ...config.Option) *serviceConfig {

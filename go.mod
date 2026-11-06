@@ -8,7 +8,7 @@ require (
 	go.unistack.org/micro-proto/v5 v5.0.0
 	go.unistack.org/micro-server-http/v5 v5.0.1
 	go.unistack.org/micro/v5 v5.0.1
-	google.golang.org/protobuf v1.36.11
+	google.golang.org/protobuf v1.36.12
 )
 
 require (
